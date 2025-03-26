@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: READ_HUB_DATABASE_CONTAINER
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword  # Cambia esta contraseña
+      MYSQL_DATABASE: READ_HUB_DATABASE   # Nombre de la base de datos inicial
+      MYSQL_USER: louis_gerardo                # Usuario para la BD
+      MYSQL_PASSWORD: pufhit-gumcU1-fytzeh           # Contraseña del usuario
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql        # Persistencia de datos
+
+volumes:
+  mysql_data:                             # Volumen para almacenar los datos
