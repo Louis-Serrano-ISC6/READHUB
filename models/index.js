@@ -26,12 +26,19 @@ fs.readdirSync(modulesPath).forEach(folder => {
     fs.readdirSync(folderPath)
       .filter(file => file.endsWith('.js'))
       .forEach(file => {
-        const model = require(path.join(folderPath, file))(sequelize, Sequelize.DataTypes);
-        db[model.name] = model;
+        // Importa el modelo como clase, no como función
+        const modelClass = require(path.join(folderPath, file));
+        
+        // Agrega el modelo al objeto db
+        // El nombre del modelo debería ser accesible como modelClass.name
+        if (modelClass && modelClass.name) {
+          db[modelClass.name] = modelClass;
+        }
       });
   }
 });
 
+// Registrar las asociaciones después de cargar todos los modelos
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
