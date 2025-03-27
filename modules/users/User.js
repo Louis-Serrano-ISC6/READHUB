@@ -1,6 +1,16 @@
 'use strict';
-module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
+
+const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../../config/db');
+
+class User extends Model {
+  static associate(models) {
+    User.belongsToMany(models.Book, { through: 'favorites_books', foreignKey: 'user_id' });
+  }
+}
+
+User.init(
+  {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -28,16 +38,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW
     }
-  }, {
+  },
+  {
+    sequelize,
+    modelName: 'User',
     tableName: 'users',
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
-  });
+  }
+);
 
-  User.associate = models => {
-    User.belongsToMany(models.Book, { through: 'favorites_books', foreignKey: 'user_id' });
-  };
-
-  return User;
-};
+module.exports = User;

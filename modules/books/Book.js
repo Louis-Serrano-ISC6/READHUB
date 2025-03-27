@@ -1,6 +1,17 @@
 'use strict';
-module.exports = (sequelize, DataTypes) => {
-  const Book = sequelize.define('Book', {
+
+const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../../config/db');
+
+class Book extends Model {
+  static associate(models) {
+    Book.belongsToMany(models.Author, { through: 'books_authors', foreignKey: 'book_id' });
+    Book.belongsToMany(models.User, { through: 'favorites_books', foreignKey: 'book_id' });
+  }
+}
+
+Book.init(
+  {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -18,15 +29,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     }
-  }, {
+  },
+  {
+    sequelize,
+    modelName: 'Book',
     tableName: 'books',
     timestamps: false
-  });
+  }
+);
 
-  Book.associate = models => {
-    Book.belongsToMany(models.Author, { through: 'books_authors', foreignKey: 'book_id' });
-    Book.belongsToMany(models.User, { through: 'favorites_books', foreignKey: 'book_id' });
-  };
-
-  return Book;
-};
+module.exports = Book;
